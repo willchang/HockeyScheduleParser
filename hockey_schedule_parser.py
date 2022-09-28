@@ -8,6 +8,12 @@ import sys
 if not __name__ == "__main__":
     sys.exit(1)
 
+if len(sys.argv) != 2:
+    print("Usage: ./hockey_schedule_parser.py <output_file>")
+    sys.exit(1)
+
+OUTPUT_FILE = sys.argv[1]
+
 # Config
 SCHEDULE_URL = "https://truenorthhockey.com/asp_pages/Team.aspx?team_id=21902"
 SEASON_YEAR = 2022
@@ -113,7 +119,11 @@ for game in parser.games:
 
     csv += f"{game.home_team} vs. {game.away_team},{start_date_day_str},{start_date_time_str},{end_date_day_str},{end_date_time_str},{game.location}"
 
-print("---------------------------")
-print(csv)
-print("---------------------------")
-print("NOTE: Google Calendar cannot detect duplicates from CSVs so delete any rows that you've already added!")
+# Write to file
+f = open(OUTPUT_FILE, "w")
+f.write(csv)
+f.close()
+
+print(f'CSV outputted to {OUTPUT_FILE}.')
+print()
+print("NOTE: Google Calendar cannot detect duplicates from CSVs so delete any rows that you've already added to your calendar!")

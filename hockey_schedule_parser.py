@@ -1,4 +1,4 @@
-#!/usr/bin/python3
+#!/usr/local/bin/python3
 
 from html.parser import HTMLParser
 import datetime
@@ -8,7 +8,10 @@ import sys
 if not __name__ == "__main__":
     sys.exit(1)
 
+# Config
 SCHEDULE_URL = "https://truenorthhockey.com/asp_pages/Team.aspx?team_id=21902"
+SEASON_YEAR = 2022
+IS_SUMMER_SEASON = False
 
 
 class Game:
@@ -87,13 +90,30 @@ for game in parser.games:
     csv += "\n"
 
     date_time_str = f'{game.date} {game.time}'
-    date_time_obj = datetime.datetime.strptime(date_time_str, '%b %d %I:%M %p')
+    start_date = datetime.datetime.strptime(date_time_str, '%b %d %I:%M %p')
 
-    end_date = date_time_obj + datetime.timedelta(hours=1)
-    end_date_day_str = end_date.strftime("%b %d")
-    end_date_time_str = end_date.strftime("%I:%M %p")
+    # Adjust year if necessary
+    year = SEASON_YEAR
+    month = start_date.month
+    if not IS_SUMMER_SEASON and 1 <= month and month <= 8:
+        year += 1
+    start_date = start_date.replace(year=year)
 
-    csv += f"{game.home_team} vs. {game.away_team},{game.date},{game.time},{end_date_day_str},{end_date_time_str},{game.location}"
+    date_format = "%Y-%m-%d"
+    time_format = "%H:%M"
 
-print("NOTE: Google Calendar cannot detect duplicates from CSVs so delete any rows that you've already added!\n\nHere is your CSV:\n\n")
+    # Start date strings
+    start_date_day_str = start_date.strftime(date_format)
+    start_date_time_str = start_date.strftime(time_format)
+
+    # End date strings
+    end_date = start_date + datetime.timedelta(hours=1)
+    end_date_day_str = end_date.strftime(date_format)
+    end_date_time_str = end_date.strftime(time_format)
+
+    csv += f"{game.home_team} vs. {game.away_team},{start_date_day_str},{start_date_time_str},{end_date_day_str},{end_date_time_str},{game.location}"
+
+print("---------------------------")
 print(csv)
+print("---------------------------")
+print("NOTE: Google Calendar cannot detect duplicates from CSVs so delete any rows that you've already added!")

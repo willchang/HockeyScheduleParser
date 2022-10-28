@@ -20,6 +20,10 @@ SEASON_YEAR = 2022
 IS_SUMMER_SEASON = False
 DESC = f"Please update your status so I can coordinate backups.<br><br><b>Beverage Duty:</b> <br><br><a href={SCHEDULE_URL}>View Schedule</a>"
 
+LOCATIONS = {"Rinx": "Rinx Toronto, 65 Orfus Rd, North York, ON M6A 1L7",
+             "Ford": "Ford Performance Centre, 400 Kipling Ave, Etobicoke, ON M8V 3L1",
+             "Coca": "Coca-Cola Coliseum, 45 Manitoba Dr, Toronto, ON M6K 3C3"}
+
 
 class Game:
     def __init__(self, date=None, time=None, location=None, home_team=None, away_team=None, desc=None):
@@ -119,7 +123,13 @@ for game in parser.games:
     end_date_day_str = end_date.strftime(date_format)
     end_date_time_str = end_date.strftime(time_format)
 
-    csv += f"{game.home_team} vs. {game.away_team},{start_date_day_str},{start_date_time_str},{end_date_day_str},{end_date_time_str},{game.location},{game.desc}"
+    location_str = game.location
+
+    for location in LOCATIONS:
+        if location_str.startswith(location):
+            location_str = LOCATIONS[location]
+
+    csv += f"{game.home_team} vs. {game.away_team} ({game.location}),{start_date_day_str},{start_date_time_str},{end_date_day_str},{end_date_time_str},\"{location_str}\",\"{game.desc}\""
 
 # Write to file
 f = open(OUTPUT_FILE, "w")

@@ -18,15 +18,17 @@ OUTPUT_FILE = sys.argv[1]
 SCHEDULE_URL = "https://truenorthhockey.com/asp_pages/Team.aspx?team_id=21902"
 SEASON_YEAR = 2022
 IS_SUMMER_SEASON = False
+DESC = f"Please update your status so I can coordinate backups.<br><br><b>Beverage Duty:</b> <br><br><a href={SCHEDULE_URL}>View Schedule</a>"
 
 
 class Game:
-    def __init__(self, date=None, time=None, location=None, home_team=None, away_team=None):
+    def __init__(self, date=None, time=None, location=None, home_team=None, away_team=None, desc=None):
         self.date = date
         self.time = time
         self.location = location
         self.home_team = home_team
         self.away_team = away_team
+        self.desc = desc
 
 
 class ScheduleHTMLParser(HTMLParser):
@@ -50,7 +52,7 @@ class ScheduleHTMLParser(HTMLParser):
 
         if not self.current_game and tag == "td":
             self.is_parsing_new_row = True
-            self.current_game = Game()
+            self.current_game = Game(desc=DESC)
 
     def handle_endtag(self, tag):
         if tag == "tr" and self.is_parsing_new_row:
@@ -87,7 +89,7 @@ parser = ScheduleHTMLParser()
 parser.feed(html_string)
 
 # Convert to csv
-csv = "Subject,Start Date,Start Time,End Date,End Time,Location"
+csv = "Subject,Start Date,Start Time,End Date,End Time,Location,Description"
 
 for game in parser.games:
     if game.location == "Bye Week":
@@ -117,7 +119,7 @@ for game in parser.games:
     end_date_day_str = end_date.strftime(date_format)
     end_date_time_str = end_date.strftime(time_format)
 
-    csv += f"{game.home_team} vs. {game.away_team},{start_date_day_str},{start_date_time_str},{end_date_day_str},{end_date_time_str},{game.location}"
+    csv += f"{game.home_team} vs. {game.away_team},{start_date_day_str},{start_date_time_str},{end_date_day_str},{end_date_time_str},{game.location},{game.desc}"
 
 # Write to file
 f = open(OUTPUT_FILE, "w")

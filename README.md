@@ -5,14 +5,15 @@ https://truenorthhockey.com team pages.
 
 ## Requirements
 
-* Python 3.10+
+- Python 3.10+
 
 ## Usage
 
-1. Go to a team page on True North Hockey's website. In
-   `hockey_schedule_parser.py`, update `SCHEDULE_URL` with this new URL. Note
+1. Update `SCHEDULE_URL`, `SEASON_YEAR`, and `IS_SUMMER_SEASON` in
+   `hockey_schedule_parser.py`.
+    - `SCHEDULE_URL` (string): This is the team page on True North Hockey's website. Note
    that this will work only for team pages and not playoff pages.
-2. (Optional) Update other parameters in the config if necessary (e.g.
-   `SEASON_YEAR`, `IS_SUMMER_SEASON`, etc.).
-3. Run `./hockey_schedule_parser.py` and provide an output file.
-4. Import your CSV into your calendar app.
+    - `SEASON_YEAR` (int): The year the season is starting in.
+    - `IS_SUMMER_SEASON` (bool): Whether the season is a summer season or not.
+1. Run `./hockey_schedule_parser.py` and provide an output file.
+1. Import your CSV into your calendar app.

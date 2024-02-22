@@ -32,7 +32,6 @@ LOCATIONS = {"Rinx": "Rinx Toronto, 65 Orfus Rd, North York, ON M6A 1L7",
              "Ford": "Ford Performance Centre, 400 Kipling Ave, Etobicoke, ON M8V 3L1",
              "Coca": "Coca-Cola Coliseum, 45 Manitoba Dr, Toronto, ON M6K 3C3"}
 
-
 class Game:
     def __init__(self, date=None, time=None, location=None, home_team=None, away_team=None, desc=None):
         self.date = date
@@ -115,15 +114,16 @@ for game in parser.games:
 
     csv += "\n"
 
-    date_time_str = f'{game.date} {game.time}'
-    start_date = datetime.datetime.strptime(date_time_str, '%b %d %I:%M %p')
+    month = datetime.datetime.strptime(game.date.split(" ")[0], '%b').month
 
     # Adjust year if necessary
     year = SEASON_YEAR
-    month = start_date.month
     if not IS_SUMMER_SEASON and 1 <= month and month <= 8:
         year += 1
-    start_date = start_date.replace(year=year)
+
+    date_time_str = f'{year} {game.date} {game.time}'
+
+    start_date = datetime.datetime.strptime(date_time_str, '%Y %b %d %I:%M %p')
 
     date_format = "%Y-%m-%d"
     time_format = "%H:%M"
